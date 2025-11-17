@@ -26,6 +26,9 @@ void print_graph_edges_adj_matrix(int n, int adj_matrix[n][n]) {
     }
 }
 
+// TODO: add multiline edges handling
+
+// TODO vericies can be unconnected
 void adjacency_matrix(int n, int m) {
     int (*adj_matrix)[n] = calloc(n, sizeof *adj_matrix);
     for (int i = 0; i < m; i++) {
@@ -33,6 +36,20 @@ void adjacency_matrix(int n, int m) {
     }
     print_graph_edges_adj_matrix(n, adj_matrix);
     print_adj_matrix(n, adj_matrix);
+    int *in_deg = calloc(n, sizeof *in_deg);
+    int *out_deg = calloc(n, sizeof *out_deg);
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            in_deg[i] += adj_matrix[j][i];
+            out_deg[i] += adj_matrix[i][j];
+        }
+    }
+    printf("Stopnie wierzchołków:\n");
+    for (int i = 0; i < n; i++) {
+        printf("Wierzchołek %d: stopień = %d, stopień wejściowy = %d, stopień "
+               "wyjściowy = %d\n",
+               i, in_deg[i] + out_deg[i], in_deg[i], out_deg[i]);
+    }
 }
 
 void incidence(int n, int m) { printf("Macierz incydencji:\n"); }
