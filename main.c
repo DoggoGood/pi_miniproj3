@@ -3,7 +3,7 @@
 #include <string.h>
 #include <time.h>
 
-#define CUSTOM_MAX 10
+// TODO add error handling for malloc and scanf
 
 void print_adj_matrix(int n, int adj_matrix[n][n]) {
     printf("Macierz sąsiedztwa:\n");
@@ -28,9 +28,9 @@ void print_graph_edges_adj_matrix(int n, int adj_matrix[n][n]) {
 
 // TODO: add multiline edges handling
 
-// TODO vericies can be unconnected
 void adjacency_matrix(int n, int m) {
     int (*adj_matrix)[n] = calloc(n, sizeof *adj_matrix);
+    // TODO vertices can be unconnected, add better randomization
     for (int i = 0; i < m; i++) {
         adj_matrix[rand() % n][rand() % n] = 1;
     }
