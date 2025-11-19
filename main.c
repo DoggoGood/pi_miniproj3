@@ -3,7 +3,8 @@
 #include <string.h>
 #include <time.h>
 
-// TODO add error handling for malloc and scanf
+// TODO: add error handling for malloc and scanf
+#define MAX_MULTILINE 10
 
 void print_adj_matrix(int n, int adj_matrix[n][n]) {
     printf("Macierz sąsiedztwa:\n");
@@ -21,18 +22,25 @@ void print_graph_edges_adj_matrix(int n, int adj_matrix[n][n]) {
         for (int j = 0; j < n; j++) {
             if (adj_matrix[i][j] == 1) {
                 printf("%d -> %d\n", i, j);
+            } else if (adj_matrix[i][j] > 1) {
+                printf("%d -> %d, multikrawędź * %d\n", i, j, adj_matrix[i][j]);
             }
         }
     }
 }
 
-// TODO: add multiline edges handling
-
 void adjacency_matrix(int n, int m) {
     int (*adj_matrix)[n] = calloc(n, sizeof *adj_matrix);
-    // TODO vertices can be unconnected, add better randomization
+    // Generacja losowych krawędzi
     for (int i = 0; i < m; i++) {
-        adj_matrix[rand() % n][rand() % n] = 1;
+        int u = rand() % n;
+        int v = rand() % n;
+        while (u == v || adj_matrix[u][v] >= 1) {
+            u = rand() % n;
+            v = rand() % n;
+        }
+        // rand() może dać nam 0, dlatego dajemy +1
+        adj_matrix[u][v] = (rand() % MAX_MULTILINE) + 1;
     }
     print_graph_edges_adj_matrix(n, adj_matrix);
     print_adj_matrix(n, adj_matrix);
@@ -61,6 +69,11 @@ int main() {
     int n, m;
     char *method;
     scanf("%d %d %s", &n, &m, method);
+    // Sprawdzanie czy graf jest spójny na wejściu
+    if (m < n - 1) {
+        fprintf(stderr, "Za mało krawędzi, aby graf był spójny\n");
+        return 1;
+    }
     if (strcmp(method, "ms") == 0)
         adjacency_matrix(n, m);
     else if (strcmp(method, "mi") == 0)
