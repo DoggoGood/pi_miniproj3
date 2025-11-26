@@ -1,10 +1,13 @@
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
 
 // TODO: add error handling for malloc and scanf
-#define MAX_MULTILINE 10
+// TODO: add adj Lista
+// TODO: add incidence matrix
+// FIX: add free() everywhere where malloc/calloc is used
 
 void print_adj_matrix(int n, int adj_matrix[n][n]) {
     printf("Macierz sąsiedztwa:\n");
@@ -32,15 +35,28 @@ void print_graph_edges_adj_matrix(int n, int adj_matrix[n][n]) {
 void adjacency_matrix(int n, int m) {
     int (*adj_matrix)[n] = calloc(n, sizeof *adj_matrix);
     // Generacja losowych krawędzi
+    int edges_added = 0;
     for (int i = 0; i < m; i++) {
         int u = rand() % n;
         int v = rand() % n;
-        while (u == v || adj_matrix[u][v] >= 1) {
-            u = rand() % n;
-            v = rand() % n;
+        // gdy edges_added < n-1 to zapewniamy spójność grafu
+        if (edges_added < n - 1) {
+            while (u == v || adj_matrix[u][v] == 1) {
+                u = rand() % n;
+                v = rand() % n;
+            }
+            adj_matrix[u][v] = 1;
+            edges_added++;
         }
-        // rand() może dać nam 0, dlatego dajemy +1
-        adj_matrix[u][v] = (rand() % MAX_MULTILINE) + 1;
+        // mamy pewność, że spójność jest zapewniona
+        else {
+            while (u == v) {
+                u = rand() % n;
+                v = rand() % n;
+            }
+            adj_matrix[u][v]++;
+            edges_added++;
+        }
     }
     print_graph_edges_adj_matrix(n, adj_matrix);
     print_adj_matrix(n, adj_matrix);
@@ -60,7 +76,27 @@ void adjacency_matrix(int n, int m) {
     }
 }
 
-void incidence(int n, int m) { printf("Macierz incydencji:\n"); }
+void print_incidence_matrix(int n, int m, int inc_matrix[n][m]) {
+    printf("Macierz incydencji:\n");
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < m; j++) {
+            if (inc_matrix[i][j] == 0)
+                printf(" 0 ");
+            else if (inc_matrix[i][j] > 0) {
+                printf("+%d ", inc_matrix[i][j]);
+
+            } else {
+                printf("%d ", inc_matrix[i][j]);
+            }
+        }
+        printf("\n");
+    }
+}
+
+void incidence(int n, int m) {
+    int (*inc_matrix)[m] = calloc(n, sizeof *inc_matrix);
+    print_incidence_matrix(n, m, inc_matrix);
+}
 
 void adjacency_list(int n, int m) { printf("Lista sąsiedztwa:\n"); }
 
@@ -68,7 +104,7 @@ int main() {
     srand(time(NULL));
     int n, m;
     char *method;
-    scanf("%d %d %s", &n, &m, method);
+    scanf("%d %d %ms", &n, &m, &method);
     // Sprawdzanie czy graf jest spójny na wejściu
     if (m < n - 1) {
         fprintf(stderr, "Za mało krawędzi, aby graf był spójny\n");
