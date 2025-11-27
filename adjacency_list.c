@@ -3,19 +3,23 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-struct vector {
-    int *neighbors;
-    int size;
-    int capacity;
-};
-
+/**
+ * Inicjalizuje wektor z początkową pojemnością 4.
+ * vec - wskaźnik do wektora do inicjalizacji
+ */
 void vector_init(struct vector *vec) {
     vec->size = 0;
-    vec->capacity = 4; // initial capacity
+    vec->capacity = 4;
     vec->neighbors = malloc(vec->capacity * sizeof(int));
 }
 
+/**
+ * Dodaje element na koniec wektora, zwiększając pojemność jeśli potrzeba.
+ * vec - wskaźnik do wektora
+ * value - wartość do dodania
+ */
 void vector_push_back(struct vector *vec, int value) {
+    // zawiększanie pojemności, jeśli potrzeba
     if (vec->size >= vec->capacity) {
         vec->capacity *= 2;
         vec->neighbors = realloc(vec->neighbors, vec->capacity * sizeof(int));
@@ -23,8 +27,19 @@ void vector_push_back(struct vector *vec, int value) {
     vec->neighbors[vec->size++] = value;
 }
 
+/**
+ * Zwalnia pamięć zaalokowaną dla wektora.
+ * vec - wskaźnik do wektora
+ */
 void vector_free(struct vector *vec) { free(vec->neighbors); }
 
+/**
+ * Tworzy listę sąsiedztwa na podstawie macierzy sąsiedztwa.
+ * n - liczba wierzchołków
+ * m - liczba krawędzi (nieużywany)
+ * adj_matrix - macierz sąsiedztwa [n][n]
+ * adj_list - tablica list sąsiedztwa do wypełnienia
+ */
 void create_adjacency_list(int n, int m, int adj_matrix[n][n],
                            struct vector adj_list[n]) {
     for (int i = 0; i < n; i++) {
@@ -37,6 +52,11 @@ void create_adjacency_list(int n, int m, int adj_matrix[n][n],
     }
 }
 
+/**
+ * Wypisuje listę sąsiedztwa w formacie: wierzchołek: sąsiedzi.
+ * n - liczba wierzchołków
+ * adj_list - tablica list sąsiedztwa
+ */
 void print_adjacency_list(int n, struct vector adj_list[n]) {
     for (int i = 0; i < n; i++) {
         printf("%d: ", i);
@@ -47,6 +67,11 @@ void print_adjacency_list(int n, struct vector adj_list[n]) {
     }
 }
 
+/**
+ * Wypisuje krawędzie grafu w formacie: u -> v lub u -> v, multikrawędź * x.
+ * n - liczba wierzchołków
+ * adj_list - tablica list sąsiedztwa
+ */
 void print_graph_edges_from_adj_list(int n, struct vector adj_list[n]) {
     printf("Krawędzie grafu:\n");
     for (int i = 0; i < n; i++) {
@@ -55,6 +80,7 @@ void print_graph_edges_from_adj_list(int n, struct vector adj_list[n]) {
             int target = adj_list[i].neighbors[j];
             int count = 1;
             j++;
+            // zliczanie multikrawędzi
             while (j < adj_list[i].size && adj_list[i].neighbors[j] == target) {
                 count++;
                 j++;
@@ -68,6 +94,11 @@ void print_graph_edges_from_adj_list(int n, struct vector adj_list[n]) {
     }
 }
 
+/**
+ * Główna funkcja do reprezentacji grafu za pomocą listy sąsiedztwa.
+ * Generuje losowy graf, wypisuje listę sąsiedztwa, krawędzie i stopnie
+ * wierzchołków. n - liczba wierzchołków m - liczba krawędzi
+ */
 void adjacency_list(int n, int m) {
     printf("Lista sąsiedztwa:\n");
     int (*adj_list)[n] = calloc(n, sizeof *adj_list);
@@ -76,6 +107,7 @@ void adjacency_list(int n, int m) {
     create_adjacency_list(n, m, adj_matrix, (struct vector *)adj_list);
     print_adjacency_list(n, (struct vector *)adj_list);
     print_graph_edges_from_adj_list(n, (struct vector *)adj_list);
+    // liczenie stopni wierzchołków
     int *in_deg = calloc(n, sizeof(int));
     int *out_deg = calloc(n, sizeof(int));
     for (int i = 0; i < n; i++) {

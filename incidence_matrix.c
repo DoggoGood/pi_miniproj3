@@ -3,6 +3,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+/**
+ * Wypisuje macierz incydencji w formacie tabelarycznym.
+ * Wartości dodatnie (+1) oznaczają początek krawędzi, ujemne (-1) koniec.
+ * n - liczba wierzchołków
+ * m - liczba krawędzi
+ * inc_matrix - macierz incydencji [n][m]
+ */
 void print_incidence_matrix(int n, int m, int inc_matrix[n][m]) {
     printf("Macierz incydencji:\n");
     for (int i = 0; i < n; i++) {
@@ -20,6 +27,13 @@ void print_incidence_matrix(int n, int m, int inc_matrix[n][m]) {
     }
 }
 
+/**
+ * Tworzy macierz incydencji na podstawie macierzy sąsiedztwa.
+ * n - liczba wierzchołków
+ * m - liczba krawędzi
+ * inc_matrix - macierz incydencji [n][m] do wypełnienia
+ * adj_matrix - macierz sąsiedztwa [n][n]
+ */
 void create_random_incidence_matrix(int n, int m, int inc_matrix[n][m],
                                     int adj_matrix[n][n]) {
     int edge_count = 0;
@@ -36,9 +50,16 @@ void create_random_incidence_matrix(int n, int m, int inc_matrix[n][m],
     }
 }
 
+/**
+ * Wypisuje krawędzie grafu w formacie: u -> v lub u -> v, multikrawędź * x.
+ * n - liczba wierzchołków
+ * m - liczba krawędzi
+ * inc_matrix - macierz incydencji [n][m]
+ */
 void print_graph_edges_incidence_matrix(int n, int m, int inc_matrix[n][m]) {
     printf("Krawędzie grafu:\n");
     int (*from_to)[m] = calloc(n, sizeof *from_to);
+    // Zliczanie krawędzi między wierzchołkami
     for (int edge = 0; edge < m; edge++) {
         int start = -1, end = -1;
         for (int i = 0; i < n; i++) {
@@ -52,6 +73,7 @@ void print_graph_edges_incidence_matrix(int n, int m, int inc_matrix[n][m]) {
             from_to[start][end]++;
         }
     }
+    // wypisywanie krawędzi
     for (int i = 0; i < n; i++) {
         for (int j = 0; j < n; j++) {
             if (from_to[i][j] == 1) {
@@ -64,6 +86,11 @@ void print_graph_edges_incidence_matrix(int n, int m, int inc_matrix[n][m]) {
     free(from_to);
 }
 
+/**
+ * Główna funkcja do reprezentacji grafu za pomocą macierzy incydencji.
+ * Generuje losowy graf, wypisuje macierz incydencji, krawędzie i stopnie
+ * wierzchołków. n - liczba wierzchołków m - liczba krawędzi
+ */
 void incidence(int n, int m) {
     int (*inc_matrix)[m] = calloc(n, sizeof *inc_matrix);
     int (*adj_matrix)[n] = calloc(n, sizeof *adj_matrix);
@@ -71,6 +98,7 @@ void incidence(int n, int m) {
     create_random_incidence_matrix(n, m, inc_matrix, adj_matrix);
     print_incidence_matrix(n, m, inc_matrix);
     print_graph_edges_incidence_matrix(n, m, inc_matrix);
+    // liczenie stopni wierzchołków
     int *in_deg = calloc(n, sizeof *in_deg);
     int *out_deg = calloc(n, sizeof *out_deg);
     for (int i = 0; i < n; i++) {

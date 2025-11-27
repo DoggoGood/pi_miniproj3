@@ -6,9 +6,6 @@
 #include <string.h>
 #include <time.h>
 
-// TODO: add error handling for malloc and scanf
-// TODO: add adj Lista
-
 int main() {
     srand(time(NULL));
     int n, m;

@@ -2,6 +2,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+/**
+ * Tworzy losową macierz sąsiedztwa dla grafu skierowanego.
+ * Zapewnia spójność grafu przez pierwsze n-1 krawędzi.
+ * n - liczba wierzchołków
+ * m - liczba krawędzi do wygenerowania
+ * adj_matrix - macierz sąsiedztwa [n][n] do wypełnienia
+ */
 void create_random_adj_matrix(int n, int m, int adj_matrix[n][n]) {
     // Generacja losowych krawędzi
     int edges_added = 0;
@@ -29,6 +36,11 @@ void create_random_adj_matrix(int n, int m, int adj_matrix[n][n]) {
     }
 }
 
+/**
+ * Wypisuje macierz sąsiedztwa w formacie tabelarycznym.
+ * n - liczba wierzchołków
+ * adj_matrix - macierz sąsiedztwa [n][n]
+ */
 void print_adj_matrix(int n, int adj_matrix[n][n]) {
     printf("Macierz sąsiedztwa:\n");
     for (int i = 0; i < n; i++) {
@@ -39,6 +51,11 @@ void print_adj_matrix(int n, int adj_matrix[n][n]) {
     }
 }
 
+/**
+ * Wypisuje krawędzie grafu w formacie: u -> v lub u -> v, multikrawędź * x.
+ * n - liczba wierzchołków
+ * adj_matrix - macierz sąsiedztwa [n][n]
+ */
 void print_graph_edges_adj_matrix(int n, int adj_matrix[n][n]) {
     printf("Krawędzie grafu:\n");
     for (int i = 0; i < n; i++) {
@@ -52,12 +69,19 @@ void print_graph_edges_adj_matrix(int n, int adj_matrix[n][n]) {
     }
 }
 
+/**
+ * Główna funkcja do reprezentacji grafu za pomocą macierzy sąsiedztwa.
+ * Generuje losowy graf, wypisuje krawędzie, macierz i stopnie wierzchołków.
+ * n - liczba wierzchołków
+ * m - liczba krawędzi
+ */
 void adjacency_matrix(int n, int m) {
     int (*adj_matrix)[n] = calloc(n, sizeof *adj_matrix);
     create_random_adj_matrix(n, m, adj_matrix);
     print_graph_edges_adj_matrix(n, adj_matrix);
 
     print_adj_matrix(n, adj_matrix);
+    // licezenie stopni wierzchołków
     int *in_deg = calloc(n, sizeof *in_deg);
     int *out_deg = calloc(n, sizeof *out_deg);
     for (int i = 0; i < n; i++) {
