@@ -1,11 +1,10 @@
-#include <stdbool.h>
+#include "adjacency_list.h"
+#include "adjacency_matrix.h"
+#include "incidence_matrix.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
-#include "adjacency_matrix.h"
-#include "incidence_matrix.h"
-#include "adjacency_list.h"
 
 // TODO: add error handling for malloc and scanf
 // TODO: add adj Lista
