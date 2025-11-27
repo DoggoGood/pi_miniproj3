@@ -1,6 +1,6 @@
+#include "adjacency_matrix.h"
 #include <stdio.h>
 #include <stdlib.h>
-#include "adjacency_matrix.h"
 
 void create_random_adj_matrix(int n, int m, int adj_matrix[n][n]) {
     // Generacja losowych krawędzi
@@ -72,4 +72,7 @@ void adjacency_matrix(int n, int m) {
                "wyjściowy = %d\n",
                i, in_deg[i] + out_deg[i], in_deg[i], out_deg[i]);
     }
+    free(adj_matrix);
+    free(in_deg);
+    free(out_deg);
 }

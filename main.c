@@ -8,8 +8,6 @@
 
 // TODO: add error handling for malloc and scanf
 // TODO: add adj Lista
-// TODO: add incidence matrix
-// FIX: add free() everywhere where malloc/calloc is used
 
 int main() {
     srand(time(NULL));
@@ -29,7 +27,9 @@ int main() {
         adjacency_list(n, m);
     else {
         printf("Zła metoda\n");
+        free(method);
         return 1;
     }
+    free(method);
     return 0;
 }
