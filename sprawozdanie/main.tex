@@ -8,9 +8,27 @@
 \geometry{a4paper, margin=1in}
 
 \usepackage{graphicx}
+\usepackage{listings}
 
 \title{Sprawozdanie z miniprojektu 3}
 \author{Mateusz Kamieniecki}
+
+\lstset{
+    inputencoding=utf8,
+    breakatwhitespace=true, 
+    breaklines=true,       
+    extendedchars=true,
+    literate=%
+    {ą}{{\k{a}}}1
+    {ć}{{\'c}}1
+    {ę}{{\k{e}}}1
+    {ł}{{\l{}}}1
+    {ń}{{\'n}}1
+    {ó}{{\'o}}1
+    {ś}{{\'s}}1
+    {ź}{{\'z}}1
+    {ż}{{\.z}}1
+}
 
 \begin{document}
 \maketitle
@@ -39,7 +57,64 @@ Aby rozwiązać problem musimy najpierw stworzyć spójny graf. W tym celu musim
 swtorzyć minimalne drzewo rozpinające do którego później będziemy dodawać
 resztę krawędzie.
 
+\subsection{Tworzenie losowego grafu spójnego}
+Minimalne drzewo rozpinające tworzymy poprzez losowe łączenie wierzchołków,
+które jeszcze nie miały połączenia. Gdy mamy już połączone wszystkie
+wierzchołki, mamy gotowe minimalne drzewo rozpinające.
+
+Gdy mamy już minimalne drzewo rozpinające, możemy dodać resztę krawędzi.
+Robimy to poprzez losowe wybieranie dwóch wierzchołków i dodawanie między nimi
+krawędzi. Krawędzie teraz mogą się powtarzać, więc możemy mieć multiłuki.
+
+Dla każdej metody reprezentacji grafu (macierz sąsiedztwa, macierz incydencji,
+lista sąsiedztwa) będziemy korzystać z macierzy sądziedztwa do tworzenia grafu,
+ponieważ ona jest najprostsza do zrobienia.
+
+\subsection{Macierz sąsiedztwa}
+
+\subsubsection{Rysowanie grafu}
+Gdy mamy wygenerowany graf w postaci macierzy sąsiedztwa, możemy go narysować
+iterując się przez tablicę i wypisać krawędź jak napotkamy niezerową wartość w
+tablicy. Liczba w danej komórce będzie reprezentować liczbę krawędzi między
+dwoma wierzchołkami.
+
+\subsubsection{Stopnie wierzchołków}
+Aby obliczyć stopnie wierzchołków, iterujemy się przez macierz sąsiedztwa i dla
+każdej niezerowej wartości w komórce dodajemy do stopnia wierzchołka wartość
+z komórki odpowiednio do stopnia wejśćia z danego wierzchołka oraz stopnia wyjścia danego wierzchołka.
+
+\subsection{Macierz incydencji}
+
+\subsubsection{Rysowanie grafu}
+Aby narysować graf z macierzy incydencji,
+iterujemy się przez kolumny macierzy. Dla każdej kolumny sprawdzamy, które
+wiersze mają wartość 1 (krawędź wychodząca) oraz -1 (krawędź wchodząca). Gdy
+zliczyliśmy wszystkie krawędzie, wypisujemy je.
+
+\subsubsection{Stopnie wierzchołków}
+Aby obliczyć stopnie wierzchołków z
+macierzy incydencji, iterujemy się przez wiersze macierzy. Dla każdego wiersza
+zliczamy liczbę wystąpień 1 (stopień wyjścia) oraz -1 (stopień wejścia).
+
+\subsection{Lista sąsiedztwa}
+
+\subsubsection{Rysowanie grafu}
+Aby narysować graf z listy sąsiedztwa, iterujemy się przez każdy wierzchołek i
+wypisujemy wszystkie krawędzie wychodzące z danego wierzchołka oraz ewentualnie
+ilość krawędzi.
+
+\subsubsection{Stopnie wierzchołków}
+Aby obliczyć stopnie wierzchołków z listy
+sąsiedztwa, iterujemy się przez każdy wierzchołek. Stopień wejścia dla danego
+wierzchołka obliczamy poprzez zliczanie ile razy dany wierzchołek pojawia, a
+stopień wyjścia to po prostu długość listy sąsiedztwa danego wierzchołka.
+
 \section{Szczegóły implementacji}
+\begin{lstlisting}[language=C] 
+\end{lstlisting}
+
+\subsection{Tworzenie losowego grafu spójnego}
+
 
 \section{Sposób wykonywania programu}
 
