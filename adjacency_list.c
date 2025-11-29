@@ -36,11 +36,10 @@ void vector_free(struct vector *vec) { free(vec->neighbors); }
 /**
  * Tworzy listę sąsiedztwa na podstawie macierzy sąsiedztwa.
  * n - liczba wierzchołków
- * m - liczba krawędzi (nieużywany)
  * adj_matrix - macierz sąsiedztwa [n][n]
  * adj_list - tablica list sąsiedztwa do wypełnienia
  */
-void create_adjacency_list(int n, int m, int adj_matrix[n][n],
+void create_adjacency_list(int n, int adj_matrix[n][n],
                            struct vector adj_list[n]) {
     for (int i = 0; i < n; i++) {
         vector_init(&adj_list[i]);
@@ -101,19 +100,19 @@ void print_graph_edges_from_adj_list(int n, struct vector adj_list[n]) {
  */
 void adjacency_list(int n, int m) {
     printf("Lista sąsiedztwa:\n");
-    int (*adj_list)[n] = calloc(n, sizeof *adj_list);
+    struct vector *adj_list = calloc(n, sizeof(struct vector));
     int (*adj_matrix)[n] = calloc(n, sizeof *adj_matrix);
     create_random_adj_matrix(n, m, adj_matrix);
-    create_adjacency_list(n, m, adj_matrix, (struct vector *)adj_list);
-    print_adjacency_list(n, (struct vector *)adj_list);
-    print_graph_edges_from_adj_list(n, (struct vector *)adj_list);
+    create_adjacency_list(n, adj_matrix, adj_list);
+    print_adjacency_list(n, adj_list);
+    print_graph_edges_from_adj_list(n, adj_list);
     // liczenie stopni wierzchołków
     int *in_deg = calloc(n, sizeof(int));
     int *out_deg = calloc(n, sizeof(int));
     for (int i = 0; i < n; i++) {
-        out_deg[i] = ((struct vector *)adj_list)[i].size;
-        for (int j = 0; j < ((struct vector *)adj_list)[i].size; j++) {
-            int neighbor = ((struct vector *)adj_list)[i].neighbors[j];
+        out_deg[i] = adj_list[i].size;
+        for (int j = 0; j < adj_list[i].size; j++) {
+            int neighbor = adj_list[i].neighbors[j];
             in_deg[neighbor]++;
         }
     }
@@ -124,7 +123,7 @@ void adjacency_list(int n, int m) {
                i, in_deg[i] + out_deg[i], in_deg[i], out_deg[i]);
     }
     for (int i = 0; i < n; i++) {
-        vector_free(&((struct vector *)adj_list)[i]);
+        vector_free(&adj_list[i]);
     }
     free(adj_matrix);
     free(in_deg);

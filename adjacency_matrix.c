@@ -17,7 +17,7 @@ void create_random_adj_matrix(int n, int m, int adj_matrix[n][n]) {
         int v = rand() % n;
         // gdy edges_added < n-1 to zapewniamy spójność grafu
         if (edges_added < n - 1) {
-            while (u == v || adj_matrix[u][v] == 1) {
+            while (u == v || adj_matrix[u][v] == 1 || adj_matrix[v][u] == 1) {
                 u = rand() % n;
                 v = rand() % n;
             }
