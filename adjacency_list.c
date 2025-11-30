@@ -19,7 +19,7 @@ void vector_init(struct vector *vec) {
  * value - wartość do dodania
  */
 void vector_push_back(struct vector *vec, int value) {
-    // zawiększanie pojemności, jeśli potrzeba
+    // zwiększanie pojemności, jeśli potrzeba
     if (vec->size >= vec->capacity) {
         vec->capacity *= 2;
         vec->neighbors = realloc(vec->neighbors, vec->capacity * sizeof(int));
