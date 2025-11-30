@@ -11,17 +11,33 @@
  */
 void create_random_adj_matrix(int n, int m, int adj_matrix[n][n]) {
     // Generacja losowych krawędzi
-    int edges_added = 0;
-    for (int i = 0; i < m; i++) {
-        int u = rand() % n;
-        int v = rand() % n;
+    int edges_added = 1;
+    int *added = calloc(n, sizeof(int));
+    int u = rand() % n;
+    int v = rand() % n;
+    while (u == v) {
+        u = rand() % n;
+        v = rand() % n;
+    }
+    adj_matrix[u][v] = 1;
+    added[u] = 1;
+    added[v] = 1;
+    for (int i = 0; i < m - 1; i++) {
+        u = rand() % n;
+        v = rand() % n;
         // gdy edges_added < n-1 to zapewniamy spójność grafu
         if (edges_added < n - 1) {
-            while (u == v || adj_matrix[u][v] == 1 || adj_matrix[v][u] == 1) {
+            while (u == v || added[u] == 0 || added[v] == 1) {
                 u = rand() % n;
                 v = rand() % n;
             }
-            adj_matrix[u][v] = 1;
+            added[v] = 1;
+            // losowanie kierunku krawędzi
+            if (rand() % 2 == 0) {
+                adj_matrix[u][v]++;
+            } else {
+                adj_matrix[v][u]++;
+            }
             edges_added++;
         }
         // mamy pewność, że spójność jest zapewniona
@@ -34,6 +50,7 @@ void create_random_adj_matrix(int n, int m, int adj_matrix[n][n]) {
             edges_added++;
         }
     }
+    free(added);
 }
 
 /**
