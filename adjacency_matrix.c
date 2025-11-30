@@ -4,15 +4,17 @@
 
 /**
  * Tworzy losową macierz sąsiedztwa dla grafu skierowanego.
- * Zapewnia spójność grafu przez pierwsze n-1 krawędzi.
+ * Zapewnia spójność grafu.
  * n - liczba wierzchołków
  * m - liczba krawędzi do wygenerowania
  * adj_matrix - macierz sąsiedztwa [n][n] do wypełnienia
  */
 void create_random_adj_matrix(int n, int m, int adj_matrix[n][n]) {
-    // Generacja losowych krawędzi
     int edges_added = 1;
+    // added jest używane do śledzenia, które wierzchołki zostały już dodane do
+    // grafu
     int *added = calloc(n, sizeof(int));
+    // losujemy i dodajemy pierwszą krawędź
     int u = rand() % n;
     int v = rand() % n;
     while (u == v) {
