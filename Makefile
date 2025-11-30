@@ -1,15 +1,15 @@
 CC = gcc
-CFLAGS = -Wall -Wextra -std=c11 -g
+CFLAGS = -Wall -Wextra -std=c11
 TARGET = main
-OBJS = main.o adjacency_matrix.o incidence_matrix.o adjacency_list.o
+OBJS = 343333.o adjacency_matrix.o incidence_matrix.o adjacency_list.o
 
 all: $(TARGET)
 
 $(TARGET): $(OBJS)
 	$(CC) $(CFLAGS) -o $(TARGET) $(OBJS)
 
-main.o: main.c adjacency_matrix.h incidence_matrix.h adjacency_list.h
-	$(CC) $(CFLAGS) -c main.c
+343333.o: 343333.c adjacency_matrix.h incidence_matrix.h adjacency_list.h
+	$(CC) $(CFLAGS) -c 343333.c
 
 adjacency_matrix.o: adjacency_matrix.c adjacency_matrix.h
 	$(CC) $(CFLAGS) -c adjacency_matrix.c
