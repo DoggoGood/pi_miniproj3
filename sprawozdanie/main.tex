@@ -14,6 +14,7 @@
 \author{Mateusz Kamieniecki}
 
 \lstset{
+    language=C,
     inputencoding=utf8,
     breakatwhitespace=true, 
     breaklines=true,       
@@ -34,7 +35,7 @@
 \maketitle
 \begin{tabular}{|p{8cm}|p{6cm}|}
 	\hline
-	\textbf{SPRAWOZDANIE}        & \textbf{Data wykonania: 29.11.2025} \\
+	\textbf{SPRAWOZDANIE}        & \textbf{Data wykonania: 30.11.2025} \\
 	\hline
 	\textbf{Tytuł miniprojektu:} & \textit{Grafy}                      \\
 	\hline
@@ -59,8 +60,8 @@ resztę krawędzie.
 
 \subsection{Tworzenie losowego grafu spójnego}
 Minimalne drzewo rozpinające tworzymy poprzez losowe łączenie wierzchołków,
-które jeszcze nie miały połączenia. Gdy mamy już połączone wszystkie
-wierzchołki, mamy gotowe minimalne drzewo rozpinające.
+które jeszcze nie miały połączenia. Gdy mamy każdy wierzchołek dostał
+połączenie z innym wierzchołki, mamy gotowe minimalne drzewo rozpinające.
 
 Gdy mamy już minimalne drzewo rozpinające, możemy dodać resztę krawędzi.
 Robimy to poprzez losowe wybieranie dwóch wierzchołków i dodawanie między nimi
@@ -110,15 +111,138 @@ wierzchołka obliczamy poprzez zliczanie ile razy dany wierzchołek pojawia, a
 stopień wyjścia to po prostu długość listy sąsiedztwa danego wierzchołka.
 
 \section{Szczegóły implementacji}
-\begin{lstlisting}[language=C] 
+\subsection{Wczytywanie danych}
+Na początku sprwadzamy czy podana liczba krawędzi jest wystarczająca do utworzenia
+spójnego grafu. Następnie w zależności od podanej metody wywołujemy odpowiednią
+funkcję tworzącą graf.
+\begin{lstlisting}[caption={Wczytywanie danych wejściowych}]
+scanf("%d %d %ms", &n, &m, &method);
+// Sprawdzanie czy graf jest spójny na wejściu
+if (m < n - 1) {
+    fprintf(stderr, "Za mało krawędzi, aby graf był spójny\n");
+    free(method);
+    return 1;
+}
+if (strcmp(method, "ms") == 0)
+    adjacency_matrix(n, m);
+else if (strcmp(method, "mi") == 0)
+    incidence(n, m);
+else if (strcmp(method, "ls") == 0)
+    adjacency_list(n, m);
+else {
+    printf("Zła metoda\n");
+    free(method);
+    return 1;
+}
+free(method);
 \end{lstlisting}
 
-\subsection{Tworzenie losowego grafu spójnego}
+\subsection{Sposób przechowywania macierzy sąsiedztwa i macierzy incydencji}
+Macierz sąsiedztwa i macierz incydencji są przedstawione jako 2d tablice, które
+są inicjalizowane przy pomocy calloca, aby wartości były na początku
+wyzerowane, wartości rozmiaru tablicy były dowolne, oraz aby można było używać
+syntaxu t[][]
+\begin{lstlisting}[caption={Inicjalizacja macierzy sąsiedztwa i incydencji}]
+int (*adj_matrix)[n] = calloc(n, sizeof *adj_matrix); 
+int (*inc_matrix)[m] = calloc(n, sizeof *inc_matrix);
+\end{lstlisting}
+\subsection{Sposób przechowywania listy sąsiedztwa}
+Używamy struktury dynamicznej tablicy do przechowywania listy sąsiedztwa. Każdy
+wierzchołek ma swoją własną tablicę sąsiadów, która może się dynamicznie
+rozrastać w razie potrzeby.
+\begin{lstlisting}[caption={Struktura dynamicznej tablicy}]
+struct vector {
+    int *neighbors;
+    int size;
+    int capacity;
+};
+\end{lstlisting}
+\begin{lstlisting}[caption={Inicjalizacja dynamicznej tablicy}]
+void vector_init(struct vector *vec) {
+    vec->size = 0;
+    vec->capacity = 4;
+    vec->neighbors = malloc(vec->capacity * sizeof(int));
+}
+\end{lstlisting}
+\begin{lstlisting}[caption={Dodawanie elementu do dynamicznej tablicy}]
+void vector_push_back(struct vector *vec, int value) {
+    // zwiększanie pojemności, jeśli potrzeba
+    if (vec->size >= vec->capacity) {
+        vec->capacity *= 2;
+        vec->neighbors = realloc(vec->neighbors, vec->capacity * sizeof(int));
+    }
+    vec->neighbors[vec->size++] = value;
+}
+\end{lstlisting}
 
+\begin{lstlisting}[caption={Zwalnianie dynamicznej tablicy}]
+void vector_free(struct vector *vec) { free(vec->neighbors); }
+\end{lstlisting}
 
 \section{Sposób wykonywania programu}
+Program jest kompilowany za pomocy GNU make. Aby skompilować program, należy
+wykonać polecenie \texttt{make} w katalogu głównym projektu. Spowoduje to
+utworzenie pliku wykonywalnego o nazwie \texttt{main}.
 
+Aby wyczyścić pliki obiektowe i plik wykonywalny, należy wykonać polecenie
+\texttt{make clean}.
+
+W przypadku braku zainstalowanego GNU make, program można skompilować
+ręcznie za pomocą następującego polecenia:
+\begin{lstlisting}[caption={Ręczna kompilacja programu}]
+gcc -Wall -Wextra -std=c11 -o main 343333.c adjacency_matrix.c 
+   incidence_matrix.c adjacency_list.c
+\end{lstlisting}
+
+Aby uruchomić program, należy wykonać polecenie \texttt{./main} i podać na
+wejściu liczbę wierzchołków, liczbę krawędzi oraz metodę
+reprezentacji grafu (ms - macierz sąsiedztwa, mi - macierz incydencji, ls - lista
+sąsiedztwa). Przykładowe polecenie uruchamiające program z 5 wierzchołkami,
+7 krawędziami i reprezentacją w postaci macierzy sąsiedztwa wygląda następująco:
+\begin{figure}[ht]
+	\centering
+	\includegraphics[width=1\textwidth]{uruchomienie_programu.png}
+	\caption{Uruchomienie programu dla przykładowych danych wejściowych}
+\end{figure}
 \section{Wnioski i spostrzeżenia}
+W ramach projektu udało się zaimplementować trzy różne metody reprezentacji
+grafów skierowanych: macierz sąsiedztwa, macierz incydencji oraz listę
+sąsiedztwa. Każda z tych metod ma swoje zalety i wady w kontekście złożoności
+pamięciowej i czasowej.
+
+\subsection{Porównanie metod reprezentacji}
+\textbf{Macierz sąsiedztwa} jest najprostsza w implementacji i pozwala na
+szybkie sprawdzenie czy istnieje krawędź między dwoma wierzchołkami w czasie
+$O(1)$. Wadą jest jednak duże zużycie pamięci $O(n^2)$, co dla rzadkich grafów
+(mało krawędzi) jest nieefektywne. Łatwo w niej również przechowywać
+multikrawędzie poprzez zwiększanie wartości w odpowiedniej komórce.
+
+\textbf{Macierz incydencji} zajmuje pamięć $O(n \cdot m)$, co dla gęstych
+grafów może być bardziej efektywne niż macierz sąsiedztwa. Pozwala na łatwe
+rozróżnienie krawędzi wchodzących i wychodzących poprzez użycie wartości
+dodatnich i ujemnych. Wadą jest większa złożoność operacji - sprawdzenie czy
+istnieje krawędź wymaga przejrzenia całej kolumny.
+
+\textbf{Lista sąsiedztwa} jest najbardziej efektywna pamięciowo dla rzadkich
+grafów, zajmując $O(n + m)$ pamięci. Iteracja po sąsiadach danego wierzchołka
+jest bardzo szybka. Wadą jest większa złożoność implementacji wymagająca
+użycia dynamicznych struktur danych oraz trudniejsze sprawdzanie istnienia
+konkretnej krawędzi.
+
+\subsection{Wnioski dotyczące implementacji}
+Implementacja generowania losowego grafu spójnego wymagała zapewnienia
+minimalnego drzewa rozpinającego poprzez pierwsze $n-1$ krawędzi, które nie
+mogły się powtarzać. Dopiero kolejne krawędzie mogły tworzyć multikrawędzie.
+Takie podejście gwarantuje spójność grafu przy dowolnej liczbie krawędzi
+większej lub równej $n-1$.
+
+Użycie macierzy sąsiedztwa jako pośredniej struktury dla pozostałych dwóch
+metod okazało się dobrym rozwiązaniem, upraszczającym kod i zapewniającym
+spójność danych wejściowych dla wszystkich reprezentacji.
+
+Dynamiczna struktura wektora dla listy sąsiedztwa pozwoliła na elastyczne
+zarządzanie pamięcią, minimalizując jej zużycie przy jednoczesnym zachowaniu
+prostoty użycia.
 
 \end{document}
 
