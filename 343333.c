@@ -9,7 +9,7 @@
 
 int main() {
     srand(time(NULL));
-    int n, m;
+    int n = 0, m = 0;
     char *method;
     printf("Podaj liczbę wierzchołków, liczbę krawędzi i metodę reprezentacji "
            "grafu (ms - macierz sąsiedztwa, mi - macierz incydencji, ls - "
@@ -29,20 +29,6 @@ int main() {
     if (n > 1 && m == 0) {
         fprintf(stderr, "Graf z więcej niż jednym wierzchołkiem i zerową "
                         "liczbą krawędzi nie jest spójny\n");
-        free(method);
-        return 1;
-    }
-    if (isnan((double)m) || isnan((double)n)) {
-        fprintf(
-            stderr,
-            "Liczba wierzchołków i krawędzi muszą być liczbami całkowitymi\n");
-        free(method);
-        return 1;
-    }
-    if (n != (int)n || m != (int)m) {
-        fprintf(
-            stderr,
-            "Liczba wierzchołków i krawędzi muszą być liczbami całkowitymi\n");
         free(method);
         return 1;
     }

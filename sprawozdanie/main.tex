@@ -12,6 +12,7 @@
 
 \title{Sprawozdanie z miniprojektu 3}
 \author{Mateusz Kamieniecki}
+\date{}
 
 \lstset{
     language=C,
@@ -48,27 +49,29 @@
 
 \section{Cel projektu}
 Celem projektu było stworzenie losowego spójnego grafu, przedstawienie go w
-postaci macierzy sąsiedztwa, macierzy incydencji oraz listy sąsiedzwtwa.
+postaci macierzy sąsiedztwa, macierzy incydencji oraz listy sąsiedztwa.
 Program miał wypisywać wyrysowany graf, listę lub macierz odpowiadającą grafu,
 stopnie wierzchołków oraz podać nam wszystkie łuki i multiłuki w grafie. Ja
 osobiście uznałem, że łuki i multiłuki będą podane podczas rysowania grafu.
+Postanowiłem jeszcze pominąć pętelki, ponieważ wprowadzają one dodatkowe
+niepewności co do macierzy incydencji oraz stopni wierzchołków.
 
 \section{Rozwiązanie problemu}
 Aby rozwiązać problem musimy najpierw stworzyć spójny graf. W tym celu musimy
-swtorzyć minimalne drzewo rozpinające do którego później będziemy dodawać
-resztę krawędzie.
+stworzyć minimalne drzewo rozpinające do którego później będziemy dodawać
+resztę krawędzi.
 
 \subsection{Tworzenie losowego grafu spójnego}
 Minimalne drzewo rozpinające tworzymy poprzez losowe łączenie wierzchołków,
-które jeszcze nie miały połączenia. Gdy mamy każdy wierzchołek dostał
-połączenie z innym wierzchołki, mamy gotowe minimalne drzewo rozpinające.
+które jeszcze nie miały połączenia. Gdy każdy wierzchołek dostał
+połączenie z innym wierzchołkiem, mamy gotowe minimalne drzewo rozpinające.
 
 Gdy mamy już minimalne drzewo rozpinające, możemy dodać resztę krawędzi.
 Robimy to poprzez losowe wybieranie dwóch wierzchołków i dodawanie między nimi
 krawędzi. Krawędzie teraz mogą się powtarzać, więc możemy mieć multiłuki.
 
 Dla każdej metody reprezentacji grafu (macierz sąsiedztwa, macierz incydencji,
-lista sąsiedztwa) będziemy korzystać z macierzy sądziedztwa do tworzenia grafu,
+lista sąsiedztwa) będziemy korzystać z macierzy sąsiedztwa do tworzenia grafu,
 ponieważ ona jest najprostsza do zrobienia.
 
 \subsection{Macierz sąsiedztwa}
@@ -82,7 +85,7 @@ dwoma wierzchołkami.
 \subsubsection{Stopnie wierzchołków}
 Aby obliczyć stopnie wierzchołków, iterujemy się przez macierz sąsiedztwa i dla
 każdej niezerowej wartości w komórce dodajemy do stopnia wierzchołka wartość
-z komórki odpowiednio do stopnia wejśćia z danego wierzchołka oraz stopnia wyjścia danego wierzchołka.
+z komórki odpowiednio do stopnia wejścia z danego wierzchołka oraz stopnia wyjścia danego wierzchołka.
 
 \subsection{Macierz incydencji}
 
@@ -112,12 +115,26 @@ stopień wyjścia to po prostu długość listy sąsiedztwa danego wierzchołka.
 
 \section{Szczegóły implementacji}
 \subsection{Wczytywanie danych}
-Na początku sprwadzamy czy podana liczba krawędzi jest wystarczająca do utworzenia
-spójnego grafu. Następnie w zależności od podanej metody wywołujemy odpowiednią
-funkcję tworzącą graf.
+Na początku sprawdzamy czy mamy odpowiednie liczby wierzchołków oraz krawędzi,
+aby utworzyć spójny graf. Następnie w zależności od podanej metody wywołujemy
+odpowiednią funkcję tworzącą graf.
 \begin{lstlisting}[caption={Wczytywanie danych wejściowych}]
-scanf("%d %d %ms", &n, &m, &method);
-// Sprawdzanie czy graf jest spójny na wejściu
+if (n <= 1) {
+    fprintf(stderr, "Liczba wierzchołków musi być większa od jedynki\n");
+    free(method);
+    return 1;
+}
+if (m < 0) {
+    fprintf(stderr, "Liczba krawędzi nie może być ujemna\n");
+    free(method);
+    return 1;
+}
+if (n > 1 && m == 0) {
+    fprintf(stderr, "Graf z więcej niż jednym wierzchołkiem i zerową "
+                    "liczbą krawędzi nie jest spójny\n");
+    free(method);
+    return 1;
+}
 if (m < n - 1) {
     fprintf(stderr, "Za mało krawędzi, aby graf był spójny\n");
     free(method);
@@ -180,7 +197,7 @@ void vector_free(struct vector *vec) { free(vec->neighbors); }
 \end{lstlisting}
 
 \section{Sposób wykonywania programu}
-Program jest kompilowany za pomocy GNU make. Aby skompilować program, należy
+Program jest kompilowany za pomocą GNU make. Aby skompilować program, należy
 wykonać polecenie \texttt{make} w katalogu głównym projektu. Spowoduje to
 utworzenie pliku wykonywalnego o nazwie \texttt{main}.
 

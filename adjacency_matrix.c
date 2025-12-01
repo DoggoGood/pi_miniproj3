@@ -24,7 +24,7 @@ void create_random_adj_matrix(int n, int m, int adj_matrix[n][n]) {
     adj_matrix[u][v] = 1;
     added[u] = 1;
     added[v] = 1;
-    for (int i = 0; i < m - 1; i++) {
+    for (int i = 1; i < m; i++) {
         u = rand() % n;
         v = rand() % n;
         // gdy edges_added < n-1 to zapewniamy spójność grafu
@@ -100,7 +100,7 @@ void adjacency_matrix(int n, int m) {
     print_graph_edges_adj_matrix(n, adj_matrix);
 
     print_adj_matrix(n, adj_matrix);
-    // licezenie stopni wierzchołków
+    // liczenie stopni wierzchołków
     int *in_deg = calloc(n, sizeof *in_deg);
     int *out_deg = calloc(n, sizeof *out_deg);
     for (int i = 0; i < n; i++) {
