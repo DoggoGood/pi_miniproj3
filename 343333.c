@@ -1,7 +1,6 @@
 #include "adjacency_list.h"
 #include "adjacency_matrix.h"
 #include "incidence_matrix.h"
-#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
